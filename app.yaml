@@ -1,0 +1,50 @@
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'your-docker-image:tag'
+        ENV_VARIABLES = 'VAR1=value1,VAR2=value2'
+        CPU_LIMIT = '1'
+        MEMORY_LIMIT = '512Mi'
+        REPLICAS = '2'
+        DOCKER_ARGUMENTS = '--arg1=value1'
+        PORT_NUMBER = '8080'
+        PVC_VOLUME = 'my-pvc'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Checkout your Git repository
+                checkout scm
+            }
+        }
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: {{ .Replicas }}
+  template:
+    spec:
+      containers:
+        - name: my-app-container
+          image: {{ .DockerImage }}
+          resources:
+            requests:
+              memory: {{ .Memory }}
+              cpu: {{ .CPU }}
+          ports:
+            - containerPort: {{ .Port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - port: {{ .Por
+qvu-kqma-rvm
